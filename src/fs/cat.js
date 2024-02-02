@@ -1,8 +1,8 @@
 import { createReadStream } from 'fs';
-import { join } from 'path';
+import Helper from '../utils/helper.js';
 
 const cat = (dirname, filename) => {
-  const pathToFile = join(dirname, filename);
+  const pathToFile = Helper.alignPath(dirname, filename)//join(dirname, filename);
   console.log('pathToFile = ', pathToFile);
   const readStream = createReadStream(pathToFile, { encoding: 'utf-8' });
 
