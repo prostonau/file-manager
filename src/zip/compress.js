@@ -1,17 +1,46 @@
 import { createReadStream, createWriteStream } from 'fs';
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
+import fs from 'fs';
+import { join } from 'path';
 import zlib from 'zlib';
+import Helper from '../utils/helper.js';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+function changeFileExtension(filename, newExtension) {
+  return filename.replace(/\..+$/, `.${newExtension}`);
+}
 
-const pathToFile = join(__dirname, 'files', 'fileToCompress.txt');
-const outputPath = join(__dirname, 'files', 'archive.gz');
 
-const compress = async () => {
-  const readStream = createReadStream(pathToFile);
-  const writeStream = createWriteStream(outputPath);
+const compress = async (dirname, pathToFile, pathToNewDir) => {  
+
+  if (!pathToFile || !pathToNewDir) {
+    console.log("We need to check pathToFile and pathToNewDir");
+    return;
+  }
+
+  let archiveFilename = '';
+  if (Helper.getFilenameFromPath(pathToNewDir).length > 0) archiveFilename = Helper.getFilenameFromPath(pathToNewDir);
+  else archiveFilename = Helper.getFilenameFromPath(pathToFile) + '.gz'
+
+  const pathToFileFinal = join(dirname, pathToFile);
+  const outputPathFinal = join(dirname, Helper.getFirstPartOfPath(pathToNewDir), archiveFilename);
+
+  try {
+    await fs.promises.access(outputPathFinal, fs.constants.F_OK);
+    console.log(`File already exists at the destination path ${outputPathFinal}`);
+    return;
+  } catch (err) {
+    if (err.code === 'ENOENT') {
+      // File does not exist at the destination path
+      await fs.promises.writeFile(outputPathFinal, '');
+    } else {
+      // Handle other errors
+      console.error('Error while accessing the destination path:', err);
+    }
+  }
+  // console.log('pathToFileFinal =', pathToFileFinal);
+  // console.log('outputPathFinal =', outputPathFinal);  
+
+  const readStream = createReadStream(pathToFileFinal);
+  const writeStream = createWriteStream(outputPathFinal);
   const gzip = zlib.createGzip();
 
   readStream.pipe(gzip).pipe(writeStream);
@@ -28,4 +57,4 @@ const compress = async () => {
   });
 };
 
-await compress();
+export default compress;

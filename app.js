@@ -16,6 +16,9 @@ import cpus from './src/os/cpus.js';
 import homedir from './src/os/homedir.js';
 import username from './src/os/username.js';
 import architecture from './src/os/architecture.js';
+import hash from './src/hash/hash.js';
+import compress from './src/zip/compress.js';
+import decompress from './src/zip/decompress.js';
 
 // const __filename = fileURLToPath(import.meta.url);
 // const __dirname = dirname(__filename);
@@ -29,33 +32,44 @@ const run = async () => {
 
     // Handle CLI input
     process.stdin.setEncoding('utf-8');
-    process.stdin.on('data', (input) => {
+    process.stdin.on('data', async (input) => {
     input = input.trim();
 
-    // Implement the logic to handle different commands
-    if (input.startsWith('up')) up();
-    else if (input.startsWith('cd')) cd(input.substring(2).trim());
-    else if (input.startsWith('ls')) ls(input.substring(2).trim());
-    else if (input.startsWith('cat')) cat(process.cwd(), input.substring(3).trim());
-    else if (input.startsWith('add')) add(process.cwd(), input.substring(3).trim());    
-    else if (input.startsWith('rn')) rn(process.cwd(), Helper.getArgsArray(input)[0], Helper.getArgsArray(input)[1]);
-    else if (input.startsWith('cp') && !input.startsWith('cpus')) cp(process.cwd(), Helper.getArgsArray(input)[0], Helper.getArgsArray(input)[1]);
-    else if (input.startsWith('mv')) mv(process.cwd(), Helper.getArgsArray(input)[0], Helper.getArgsArray(input)[1]);
-    else if (input.startsWith('rm')) rm(process.cwd(), input.substring(2).trim());
-    else if (input.startsWith('EOL')) EOL();
-    else if (input.startsWith('cpus')) cpus();
-    else if (input.startsWith('homedir')) homedir();
-    else if (input.startsWith('username')) username();
-    else if (input.startsWith('architecture')) architecture();
-    else if (input.startsWith('.exit')) {
-        console.log(`Thank you for using File Manager, ${username}, goodbye!`);
-        process.exit();
-    }
-      else {
-        console.log('Invalid input');
+    const route = async (input) => {
+        // Implement the logic to handle different commands
+        if (input.startsWith('up')) up();
+        else if (input.startsWith('cd')) cd(input.substring(2).trim());
+        else if (input.startsWith('ls')) ls(input.substring(2).trim());
+        else if (input.startsWith('cat')) cat(process.cwd(), input.substring(3).trim());
+        else if (input.startsWith('add')) add(process.cwd(), input.substring(3).trim());    
+        else if (input.startsWith('rn')) rn(process.cwd(), Helper.getArgsArray(input)[0], Helper.getArgsArray(input)[1]);
+        else if (input.startsWith('cp') && !input.startsWith('cpus')) cp(process.cwd(), Helper.getArgsArray(input)[0], Helper.getArgsArray(input)[1]);
+        else if (input.startsWith('mv')) mv(process.cwd(), Helper.getArgsArray(input)[0], Helper.getArgsArray(input)[1]);
+        else if (input.startsWith('rm')) rm(process.cwd(), input.substring(2).trim());
+        else if (input.startsWith('EOL')) EOL();
+        else if (input.startsWith('cpus')) cpus();
+        else if (input.startsWith('homedir')) homedir();
+        else if (input.startsWith('username')) username();
+        else if (input.startsWith('architecture')) architecture();
+        else if (input.startsWith('hash')) await hash(process.cwd(), input.substring(4).trim());
+        else if (input.startsWith('compress')) compress(process.cwd(), Helper.getArgsArray(input)[0], Helper.getArgsArray(input)[1]);
+        else if (input.startsWith('decompress')) decompress(process.cwd(), Helper.getArgsArray(input)[0], Helper.getArgsArray(input)[1]);
+        else if (input.startsWith('.exit')) {
+            console.log(`Thank you for using File Manager, ${username}, goodbye!`);
+            process.exit();
+        }
+        else {
+            console.log('Invalid input');
+        }
     }
 
-    Helper.showCurrentDirInConsole();
+    try {
+        await route(input);
+      } catch (error) {
+        console.error('Routing | An error occurred:', error);
+      } finally {
+        Helper.showCurrentDirInConsole();
+      }
 
     });
 

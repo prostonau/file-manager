@@ -3,7 +3,7 @@ import path from 'path';
 import { join } from 'path';
 
 class Helper {
-     static showCurrentDirInConsole() {
+     static showCurrentDirInConsole  () {
         console.log(`You are currently in ${process.cwd()}`);
       }   
 
@@ -34,6 +34,9 @@ class Helper {
       } 
       
       static getFilenameFromPath(filePath) {
+        filePath = filePath.trim();
+        if (filePath === "\\" || filePath === "/" || filePath === ".") return '';        
+        if (!filePath.match(/[^\/\\]+$/)) return '';
         return filePath.match(/[^\/\\]+$/)[0];
       } 
 }
