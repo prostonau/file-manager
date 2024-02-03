@@ -21,8 +21,8 @@ import compress from './src/zip/compress.js';
 import decompress from './src/zip/decompress.js';
 
 // const __filename = fileURLToPath(import.meta.url);
-// const __dirname = dirname(__filename);
-
+// const __dirname = dirname(__filename); //
+// test
 
 const run = async () => {
     const user = getUsername();
