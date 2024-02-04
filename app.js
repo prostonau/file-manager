@@ -46,11 +46,11 @@ const run = async () => {
         else if (input.startsWith('cp') && !input.startsWith('cpus')) cp(process.cwd(), Helper.getArgsArray(input)[0], Helper.getArgsArray(input)[1]);
         else if (input.startsWith('mv')) mv(process.cwd(), Helper.getArgsArray(input)[0], Helper.getArgsArray(input)[1]);
         else if (input.startsWith('rm')) rm(process.cwd(), input.substring(2).trim());
-        else if (input.startsWith('EOL')) EOL();
-        else if (input.startsWith('cpus')) cpus();
-        else if (input.startsWith('homedir')) homedir();
-        else if (input.startsWith('username')) username();
-        else if (input.startsWith('architecture')) architecture();
+        else if (input.startsWith('os --EOL')) EOL();
+        else if (input.startsWith('os --cpus')) cpus();
+        else if (input.startsWith('os --homedir')) homedir();
+        else if (input.startsWith('os --username')) username();
+        else if (input.startsWith('os --architecture')) architecture();
         else if (input.startsWith('hash')) await hash(process.cwd(), input.substring(4).trim());
         else if (input.startsWith('compress')) compress(process.cwd(), Helper.getArgsArray(input)[0], Helper.getArgsArray(input)[1]);
         else if (input.startsWith('decompress')) decompress(process.cwd(), Helper.getArgsArray(input)[0], Helper.getArgsArray(input)[1]);
